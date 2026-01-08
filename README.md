@@ -50,16 +50,16 @@ By combining **patient data management** with **AI-driven disease prediction**, 
 
 ## 🏗️ System Architecture
 
-Medical Note From doctor
-        ↓
-Text Preprocessing
-        ↓
+Medical Note From doctor <br>
+        ↓<br>
+Text Preprocessing <br>
+        ↓<br>
 Clinical BERT Embeddings
-        ↓
-ANN Classifier
-        ↓
-Disease Prediction
-        ↓
+        ↓<br>
+ANN Classifier<br>
+        ↓<br>
+Disease Prediction<br>
+        ↓<br>
 Django Web Interface
 
 ---
