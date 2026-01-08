@@ -1,0 +1,203 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ patient.name }} - Patient Detail{% endblock %}
+
+{% block extra_css %}
+<style>
+    .patient-header {
+        background: white;
+        padding: 2rem;
+        border-radius: 10px;
+        margin-bottom: 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .patient-info h1 {
+        color: #667eea;
+        margin-bottom: 0.5rem;
+    }
+
+    .patient-meta {
+        display: flex;
+        gap: 2rem;
+        color: #6c757d;
+        margin-top: 0.5rem;
+    }
+
+    .patient-meta span {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .action-buttons .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(26, 148, 18, 0.2);
+        transition: all 0.25s ease;
+    }
+
+    .tabs {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        background: white;
+        padding: 1rem;
+        border-radius: 10px;
+    }
+
+    .tab {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        font-size: 1rem;
+        color: #6c757d;
+        border-bottom: 3px solid transparent;
+        transition: all 0.3s;
+    }
+
+    .tab.active {
+        color: #667eea;
+        border-bottom-color: #667eea;
+    }
+
+    .tab-content {
+        display: none;
+    }
+
+    .tab-content.active {
+        display: block;
+    }
+
+    .note-card, .history-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+        border-left: 4px solid #667eea;
+    }
+
+    .note-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .note-date {
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+
+    .note-text {
+        color: #333;
+        line-height: 1.6;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="patient-header">
+    <div class="patient-info">
+        <h1>{{ patient.name }}</h1>
+        <div class="patient-meta">
+            <span>👤 {{ patient.get_gender_display }}</span>
+            <span>🎂 {{ patient.age }} years</span>
+            <span>📞 {{ patient.contact }}</span>
+        </div>
+    </div>
+    <div class="action-buttons">
+        <a href="{% url 'add_medical_note' patient.id %}" class="btn btn-primary">
+            ➕ Add Medical Note
+        </a>
+        
+        <a href="{% url 'edit_patient' patient.id %}" class="btn btn-secondary" title="Edit Patient">
+            ✏️ Edit
+        </a>
+
+        <a href="{% url 'delete_patient' patient.id %}" class="btn btn-danger" title="Delete Patient">
+            🗑️ Delete
+        </a>
+    </div>
+</div>
+
+<div class="tabs">
+    <button class="tab active" onclick="showTab('notes')">Medical Notes & Predictions</button>
+    <button class="tab" onclick="showTab('info')">Patient Information</button>
+</div>
+
+<div id="notes" class="tab-content active">
+    <div class="card">
+        <h2 style="margin-bottom: 1.5rem;">Medical Notes & AI Predictions</h2>
+        {% if medical_notes %}
+            {% for note in medical_notes %}
+            <div class="note-card">
+                <div class="note-header">
+                    <div>
+                        <strong>{{ note.get_note_type_display }}</strong>
+                        <span class="note-date">{{ note.created_at|date:"M d, Y H:i" }}</span>
+                    </div>
+                    {% if note.prediction %}
+                    <a href="{% url 'prediction_result' note.id %}" class="btn btn-primary" style="padding: 0.4rem 1rem;">
+                        View Prediction
+                    </a>
+                    {% endif %}
+                </div>
+                <div class="note-text">{{ note.note_text }}</div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p style="text-align: center; color: #6c757d; padding: 2rem;">
+                No medical notes yet. Add a note to get AI predictions.
+            </p>
+        {% endif %}
+    </div>
+</div>
+
+<div id="info" class="tab-content">
+    <div class="card">
+        <h2 style="margin-bottom: 1.5rem;">Patient Information</h2>
+        <table class="table">
+            <tr>
+                <th>Name</th>
+                <td>{{ patient.name }}</td>
+            </tr>
+            <tr>
+                <th>Age</th>
+                <td>{{ patient.age }} years</td>
+            </tr>
+            <tr>
+                <th>Gender</th>
+                <td>{{ patient.get_gender_display }}</td>
+            </tr>
+            <tr>
+                <th>Contact</th>
+                <td>{{ patient.contact }}</td>
+            </tr>
+            <tr>
+                <th>Diagnosis</th>
+                <td>{{ patient.diagnosis }}</td>
+            </tr>
+            <tr>
+                <th>Registered On</th>
+                <td>{{ patient.created_at|date:"M d, Y" }}</td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<script>
+function showTab(tabName) {
+    const tabs = document.querySelectorAll('.tab');
+    const contents = document.querySelectorAll('.tab-content');
+    
+    tabs.forEach(tab => tab.classList.remove('active'));
+    contents.forEach(content => content.classList.remove('active'));
+    
+    event.target.classList.add('active');
+    document.getElementById(tabName).classList.add('active');
+}
+</script>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Patients List{% endblock %}
+{% block content %}
+<div class="card">
+    <h1>My Patients</h1>
+    <a href="{% url 'add_patient' %}" class="btn btn-primary">Add New Patient</a>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Gender</th>
+                <th>Contact</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for patient in patients %}
+            <tr>
+                <td>{{ patient.name }}</td>
+                <td>{{ patient.age }}</td>
+                <td>{{ patient.get_gender_display }}</td>
+                <td>{{ patient.contact }}</td>
+                <td>
+                    <a href="{% url 'patient_detail' patient.id %}" class="btn btn-primary">View</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

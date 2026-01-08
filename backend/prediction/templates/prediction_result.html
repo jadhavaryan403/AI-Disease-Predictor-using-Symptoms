@@ -1,0 +1,196 @@
+{% extends 'base.html' %}
+
+{% block title %}Prediction Results - {{ patient.name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .result-header {
+        background: white;
+        padding: 2rem;
+        border-radius: 10px;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    .result-header h1 {
+        color: #667eea;
+        margin-bottom: 0.5rem;
+    }
+
+    .patient-name {
+        font-size: 1.3rem;
+        color: #6c757d;
+    }
+
+    .predictions-grid {
+        display: grid;
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .prediction-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-left: 5px solid;
+        transition: transform 0.3s;
+    }
+
+    .prediction-card:hover {
+        transform: translateX(5px);
+    }
+
+    .prediction-card:nth-child(1) {
+        border-left-color: #dc3545;
+        background: linear-gradient(135deg, #fff 0%, #fff5f5 100%);
+    }
+
+    .prediction-card:nth-child(2) {
+        border-left-color: #fd7e14;
+        background: linear-gradient(135deg, #fff 0%, #fff8f0 100%);
+    }
+
+    .prediction-card:nth-child(3) {
+        border-left-color: #ffc107;
+        background: linear-gradient(135deg, #fff 0%, #fffcf0 100%);
+    }
+
+    .prediction-card:nth-child(4) {
+        border-left-color: #28a745;
+        background: linear-gradient(135deg, #fff 0%, #f0fff4 100%);
+    }
+
+    .prediction-card:nth-child(5) {
+        border-left-color: #17a2b8;
+        background: linear-gradient(135deg, #fff 0%, #f0faff 100%);
+    }
+
+    .disease-name {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .confidence-badge {
+        padding: 0.5rem 1.5rem;
+        border-radius: 25px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: white;
+    }
+
+    .confidence-high {
+        background: #dc3545;
+    }
+
+    .confidence-medium {
+        background: #ffc107;
+    }
+
+    .confidence-low {
+        background: #28a745;
+    }
+
+    .medical-note-section {
+        background: white;
+        padding: 2rem;
+        border-radius: 10px;
+        margin-bottom: 2rem;
+    }
+
+    .note-content {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 8px;
+        line-height: 1.8;
+        color: #333;
+        margin-top: 1rem;
+    }
+
+    .rank-badge {
+        background: #667eea;
+        color: white;
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        margin-right: 1rem;
+    }
+
+    .disclaimer {
+        background: #fff3cd;
+        border: 1px solid #ffc107;
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin-top: 2rem;
+    }
+
+    .disclaimer strong {
+        color: #856404;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="result-header">
+    <h1>🔮 AI Disease Prediction Results</h1>
+    <p class="patient-name">Patient: <strong>{{ patient.name }}</strong></p>
+    <p style="color: #6c757d; margin-top: 0.5rem;">
+        Analysis Date: {{ prediction.created_at|date:"M d, Y H:i" }}
+    </p>
+</div>
+
+<div class="card">
+    <h2 style="margin-bottom: 1.5rem;">Top 5 Predicted Diseases</h2>
+    <div class="predictions-grid">
+        {% for pred in prediction.predicted_diseases %}
+        <div class="prediction-card">
+            <div style="display: flex; align-items: center;">
+                <span class="rank-badge">#{{ forloop.counter }}</span>
+                <div>
+                    <div class="disease-name">{{ pred.disease }}</div>
+                    <small style="color: #6c757d;">AI Confidence Score</small>
+                </div>
+            </div>
+            <div class="confidence-badge {% if pred.confidence >= 70 %}confidence-high{% elif pred.confidence >= 40 %}confidence-medium{% else %}confidence-low{% endif %}">
+                {{ pred.confidence }}%
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="medical-note-section">
+    <h2 style="margin-bottom: 1rem;">Medical Note Analyzed</h2>
+    <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+        <span style="background: #667eea; color: white; padding: 0.3rem 1rem; border-radius: 20px;">
+            {{ medical_note.get_note_type_display }}
+        </span>
+        <span style="color: #6c757d;">
+            By: Dr. {{ medical_note.doctor.get_full_name }}
+        </span>
+    </div>
+    <div class="note-content">
+        {{ medical_note.note_text|linebreaks }}
+    </div>
+</div>
+
+<div class="disclaimer">
+    <strong>⚠️ Important Disclaimer:</strong>
+    <p style="margin-top: 0.5rem;">
+        This AI prediction is meant to assist medical professionals and should NOT be used as the 
+        sole basis for diagnosis or treatment. Always combine AI insights with clinical judgment, 
+        patient history, physical examination, and appropriate diagnostic tests. Consult with 
+        relevant specialists when needed.
+    </p>
+</div>
+
+<div style="display: flex; gap: 1rem; margin-top: 2rem;">
+    <a href="{% url 'patient_detail' patient.id %}" class="btn btn-primary" style="flex: 1;">
+        Back to Patient Profile
+    </a>
+    
+</div>
+{% endblock %}

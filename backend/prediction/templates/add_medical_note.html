@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Medical Note - {{ patient.name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .page-header {
+        color: white;
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .page-header h1 {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .ai-indicator {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 1rem;
+        border-radius: 10px;
+        text-align: center;
+        margin-top: 1.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>🔮 Add Medical Note & Predict Disease</h1>
+    <p>For patient: <strong>{{ patient.name }}</strong></p>
+</div>
+
+<div class="card">
+    <form method="post" id="noteForm">
+        {% csrf_token %}
+
+        <!-- Hidden note type (always text) -->
+        <input type="hidden" name="note_type" value="text">
+
+        <div class="form-group">
+            <label for="note_text"><strong>Medical Note / Symptoms</strong></label>
+            <textarea
+                id="note_text"
+                name="note_text"
+                class="form-control"
+                rows="10"
+                required
+                placeholder="Describe patient symptoms, observations, and clinical findings...
+
+Example:
+- Persistent cough for 2 weeks
+- Fever (101°F) with chills
+- Shortness of breath on exertion
+- Fatigue and loss of appetite
+- Crackles heard in lower lung fields"
+            ></textarea>
+        </div>
+
+        <div class="ai-indicator">
+            <strong>🤖 AI Processing:</strong>
+            This medical note will be analyzed using <b>Clinical BERT</b>
+            and a neural network model to predict possible diseases.
+        </div>
+
+        <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+            <button type="submit" class="btn btn-primary" style="flex: 1;">
+                🔮 Analyze & Predict
+            </button>
+            <a href="{% url 'patient_detail' patient.id %}" class="btn btn-secondary">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

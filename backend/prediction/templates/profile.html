@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card p-4 shadow-sm">
+
+        <h2 class="mb-3">👨‍⚕️ Doctor Profile</h2>
+
+        <!-- Django messages -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="form-group mb-3">
+                <label>Username</label>
+                <input type="text" value="{{ user.username }}" class="form-control" readonly>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 form-group mb-3">
+                    <label>First Name</label>
+                    <input type="text" name="first_name" value="{{ user.first_name }}" class="form-control">
+                </div>
+                <div class="col-md-6 form-group mb-3">
+                    <label>Last Name</label>
+                    <input type="text" name="last_name" value="{{ user.last_name }}" class="form-control">
+                </div>
+            </div>
+
+            <div class="form-group mb-3">
+                <label>Email</label>
+                <input type="email" name="email" value="{{ user.email }}" class="form-control">
+            </div>
+
+            <div class="form-group mb-3">
+                <label>Specialization</label>
+                <input type="text" name="specialization"
+                       value="{{ doctor_profile.specialization }}"
+                       class="form-control">
+            </div>
+
+            <div class="form-group mb-4">
+                <label>Phone</label>
+                <input type="text" name="phone"
+                       value="{{ doctor_profile.phone }}"
+                       class="form-control">
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">
+                Update Profile
+            </button>
+        </form>
+
+    </div>
+</div>
+{% endblock %}
