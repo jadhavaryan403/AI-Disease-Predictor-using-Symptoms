@@ -54,7 +54,7 @@ Medical Note From doctor <br>
         ↓<br>
 Text Preprocessing <br>
         ↓<br>
-Clinical BERT Embeddings
+Clinical BERT Embeddings <br>
         ↓<br>
 ANN Classifier<br>
         ↓<br>
