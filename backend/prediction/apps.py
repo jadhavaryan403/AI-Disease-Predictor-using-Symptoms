@@ -2,7 +2,7 @@ from django.apps import AppConfig
 
 class PredictionConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'backend.prediction'
+    name = 'prediction'
 
     def ready(self):
-        import backend.prediction.signals
+        import prediction.signals
