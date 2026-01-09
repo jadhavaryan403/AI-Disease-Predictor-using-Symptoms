@@ -138,8 +138,10 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # ML MODEL PATHS (CRITICAL)
 # --------------------------------------------------
 
-MODEL_PATH = BASE_DIR / "ML_models" / "disease_classifier_ann_model.pth"
-LABEL_ENCODER_PATH = BASE_DIR / "Ml_models" / "label_encoder.joblib"
+ANN_ONNX_PATH = BASE_DIR / "ML_models" / "disease_classifier_ann_model.onnx"
+BERT_ONNX_PATH = BASE_DIR / "ML_models" / "bert_tmp.onnx"
+LABEL_ENCODER_PATH = BASE_DIR / "ML_models" / "label_encoder.joblib"
+
 
 
 # --------------------------------------------------
