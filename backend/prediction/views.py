@@ -21,10 +21,21 @@ def home(request):
 
 def register_view(request):
     if request.method == 'POST':
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+
+        if User.objects.filter(username=username).exists():
+            messages.error(request, "Username already exists")
+            return redirect('register')
+
+        if User.objects.filter(email=email).exists():
+            messages.error(request, "Email already registered")
+            return redirect('register')
+
         user = User.objects.create_user(
-            username=request.POST['username'],
-            password=request.POST['password'],
-            email=request.POST.get('email'),
+            username=username,
+            password=request.POST.get('password'),
+            email=email,
             first_name=request.POST.get('first_name'),
             last_name=request.POST.get('last_name')
         )
