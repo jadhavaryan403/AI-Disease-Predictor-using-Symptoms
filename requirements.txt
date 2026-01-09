@@ -5,3 +5,5 @@ numpy
 scikit-learn
 gunicorn
 joblib
+psycopg2-binary
+dj-database-url
