@@ -4,6 +4,7 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.core.paginator import Paginator
+from django.db import transaction, IntegrityError
 
 from .models import DoctorProfile, Patient, MedicalNote, DiseasePrediction
 from .ml_service import get_predictor
@@ -21,35 +22,33 @@ def home(request):
 
 def register_view(request):
     if request.method == 'POST':
-        username = request.POST.get('username')
-        email = request.POST.get('email')
+        try:
+            with transaction.atomic():
+                user = User.objects.create_user(
+                    username=request.POST.get('username'),
+                    password=request.POST.get('password'),
+                    email=request.POST.get('email'),
+                    first_name=request.POST.get('first_name'),
+                    last_name=request.POST.get('last_name')
+                )
 
-        if User.objects.filter(username=username).exists():
-            messages.error(request, "Username already exists")
+                DoctorProfile.objects.get_or_create(
+                    user=user,
+                    defaults={
+                        "specialization": request.POST.get('specialization'),
+                        "phone": request.POST.get('phone')
+                    }
+                )
+
+            messages.success(request, "Registration successful. Please login.")
+            return redirect('login')
+
+        except IntegrityError:
+            messages.error(request, "User already exists.")
             return redirect('register')
-
-        if User.objects.filter(email=email).exists():
-            messages.error(request, "Email already registered")
-            return redirect('register')
-
-        user = User.objects.create_user(
-            username=username,
-            password=request.POST.get('password'),
-            email=email,
-            first_name=request.POST.get('first_name'),
-            last_name=request.POST.get('last_name')
-        )
-
-        DoctorProfile.objects.create(
-            user=user,
-            specialization=request.POST.get('specialization'),
-            phone=request.POST.get('phone')
-        )
-
-        messages.success(request, "Registration successful. Please login.")
-        return redirect('login')
 
     return render(request, 'register.html')
+
 
 
 def login_view(request):
