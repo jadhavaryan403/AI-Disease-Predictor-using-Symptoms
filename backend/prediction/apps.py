@@ -5,4 +5,4 @@ class PredictionConfig(AppConfig):
     name = 'backend.prediction'
 
     def ready(self):
-        import prediction.signals
+        import backend.prediction.signals
