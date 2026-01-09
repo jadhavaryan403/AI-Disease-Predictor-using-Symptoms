@@ -70,6 +70,7 @@ Django Web Interface
 - **Django**
 - Django Templates
 - Django ORM
+- Postgresql
 
 ### 🔹 Machine Learning & NLP
 - PyTorch 
@@ -95,9 +96,14 @@ Django Web Interface
 
 ---
 
+### Check the Website live on this link
+https://ai-disease-predictor-using-symptoms.onrender.com
+
+---
+
 ## ⚙️ Installation & Setup
 
 ### 1️⃣ Clone the repository
-In bash
+```bash
 git clone https://github.com/your-username/medical-disease-predictor.git
 cd medical-disease-predictor
