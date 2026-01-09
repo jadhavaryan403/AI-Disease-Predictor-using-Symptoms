@@ -1,6 +1,3 @@
-import os
-os.environ["CUDA_VISIBLE_DEVICES"] = ""   # 🔒 Force CPU
-
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -11,7 +8,7 @@ from django.conf import settings
 
 
 # --------------------------------------------------
-# ANN MODEL (must match training architecture)
+# ANN MODEL (INFERENCE SAFE)
 # --------------------------------------------------
 class ANNClassifier(nn.Module):
     def __init__(self, input_dim, num_classes):
@@ -24,23 +21,15 @@ class ANNClassifier(nn.Module):
         self.dropout2 = nn.Dropout(0.3)
 
         self.fc3 = nn.Linear(256, 128)
-        self.bn3 = nn.BatchNorm1d(128, momentum=0.01, eps=0.001)
+        self.bn3 = nn.BatchNorm1d(128)
 
         self.fc4 = nn.Linear(128, 64)
-        self.bn4 = nn.BatchNorm1d(64, momentum=0.01, eps=0.001)
+        self.bn4 = nn.BatchNorm1d(64)
 
         self.fc5 = nn.Linear(64, 32)
-        self.bn5 = nn.BatchNorm1d(32, momentum=0.01, eps=0.001)
+        self.bn5 = nn.BatchNorm1d(32)
 
         self.fc6 = nn.Linear(32, num_classes)
-
-        self.apply(self.init_weights)
-
-    def init_weights(self, m):
-        if isinstance(m, nn.Linear):
-            nn.init.xavier_uniform_(m.weight)
-            if m.bias is not None:
-                nn.init.zeros_(m.bias)
 
     def forward(self, x):
         x = F.relu(self.fc1(x))
@@ -58,8 +47,7 @@ class ANNClassifier(nn.Module):
         x = F.relu(self.fc5(x))
         x = self.bn5(x)
 
-        x = self.fc6(x)   # ❗ NO softmax here
-        return x
+        return self.fc6(x) 
 
 
 # --------------------------------------------------
@@ -74,51 +62,49 @@ class DiseasePredictor:
         self.ann_model = None
         self.label_encoder = None
 
-        self.load_models()
+        self._load_models()
+
 
     # --------------------------------------------------
 
-    def load_models(self):
-        """Load PyTorch ANN, LabelEncoder, Tiny ClinicalBERT"""
+    def _load_models(self):
         try:
-            # LabelEncoder
+            # Load LabelEncoder
             self.label_encoder = joblib.load(settings.LABEL_ENCODER_PATH)
             num_classes = len(self.label_encoder.classes_)
             print("✅ LabelEncoder loaded")
 
-            # Tiny ClinicalBERT (PyTorch)
+            # Load Tiny ClinicalBERT (CPU)
             self.tokenizer = AutoTokenizer.from_pretrained(
                 "nlpie/tiny-clinicalbert"
             )
             self.bert_model = AutoModel.from_pretrained(
                 "nlpie/tiny-clinicalbert"
-            ).to(self.device)
-            self.bert_model.eval()
-            print("✅ Tiny ClinicalBERT loaded (PyTorch, CPU)")
-
-            # ANN Classifier
-            self.ann_model = ANNClassifier(
-                input_dim=312,   # Tiny ClinicalBERT hidden size
-                num_classes=num_classes
-            ).to(self.device)
-
-            self.ann_model.load_state_dict(
-                torch.load(settings.MODEL_PATH, map_location=self.device)
             )
+            self.bert_model.to(self.device)
+            self.bert_model.eval()
+            print("✅ Tiny ClinicalBERT loaded (CPU)")
+
+            # Load ANN
+            self.ann_model = ANNClassifier(
+                input_dim=312,
+                num_classes=num_classes
+            )
+            self.ann_model.load_state_dict(
+                torch.load(settings.MODEL_PATH, map_location="cpu")
+            )
+            self.ann_model.to(self.device)
             self.ann_model.eval()
-            print("✅ ANN model loaded (PyTorch)")
+            print("✅ ANN model loaded (CPU)")
 
         except Exception as e:
             raise RuntimeError(f"Model loading failed: {e}")
+
 
     # --------------------------------------------------
 
     @torch.no_grad()
     def get_bert_embedding(self, text):
-        """
-        Mean pooled Tiny ClinicalBERT embedding
-        Output shape: (1, 312)
-        """
         inputs = self.tokenizer(
             text,
             return_tensors="pt",
@@ -136,8 +122,8 @@ class DiseasePredictor:
         summed = torch.sum(token_embeddings * attention_mask, dim=1)
         counts = torch.sum(attention_mask, dim=1)
 
-        embedding = summed / counts
-        return embedding
+        return summed / counts
+
 
     # --------------------------------------------------
 
@@ -146,23 +132,25 @@ class DiseasePredictor:
         embedding = self.get_bert_embedding(text)
 
         logits = self.ann_model(embedding)
-        preds = torch.softmax(logits, dim=1)[0].cpu().numpy()
+        probs = torch.softmax(logits, dim=1)[0].cpu().numpy()
 
-        top_indices = np.argsort(preds)[-top_k:][::-1]
+        top_indices = np.argsort(probs)[-top_k:][::-1]
         diseases = self.label_encoder.inverse_transform(top_indices)
 
-        results = []
-        for idx, disease in zip(top_indices, diseases):
-            results.append({
+        results = [
+            {
                 "disease": disease,
-                "confidence": round(float(preds[idx]) * 100, 2)
-            })
+                "confidence": round(float(probs[idx]) * 100, 2)
+            }
+            for idx, disease in zip(top_indices, diseases)
+        ]
 
         return {
             "top_predictions": results,
             "best_prediction": results[0]["disease"],
             "best_confidence": results[0]["confidence"]
         }
+
 
     # --------------------------------------------------
 
