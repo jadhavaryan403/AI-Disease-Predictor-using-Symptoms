@@ -32,7 +32,7 @@ def register_view(request):
                     last_name=request.POST.get('last_name')
                 )
 
-                DoctorProfile.objects.get_or_create(
+                DoctorProfile.objects.update_or_create(
                     user=user,
                     defaults={
                         "specialization": request.POST.get('specialization'),
