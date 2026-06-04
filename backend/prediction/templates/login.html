@@ -1,78 +1,179 @@
 {% extends 'base.html' %}
 
-{% block title %}Login - AI Disease Predictor{% endblock %}
+{% block title %}Login - MedAI Disease Predictor{% endblock %}
 
 {% block extra_css %}
 <style>
-    .auth-container {
-        max-width: 450px;
-        margin: 3rem auto;
+    .auth-wrap {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0;
+        min-height: calc(100vh - 64px - 56px);
+        margin: -2.5rem -1.5rem -2.5rem;
     }
 
-    .auth-card {
-        background: white;
-        padding: 3rem;
-        border-radius: 15px;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    .auth-panel {
+        background: var(--primary);
+        padding: 4rem 3rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
     }
 
-    .auth-header {
-        text-align: center;
+    .auth-panel::before {
+        content: '';
+        position: absolute;
+        top: -100px; right: -100px;
+        width: 350px; height: 350px;
+        background: rgba(255,255,255,0.07);
+        border-radius: 50%;
+    }
+
+    .auth-panel::after {
+        content: '';
+        position: absolute;
+        bottom: -80px; left: -80px;
+        width: 280px; height: 280px;
+        background: rgba(255,255,255,0.05);
+        border-radius: 50%;
+    }
+
+    .auth-panel-content {
+        position: relative;
+    }
+
+    .auth-panel h2 {
+        font-size: 2.4rem;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        color: #fff;
+        line-height: 1.1;
+        margin-bottom: 1rem;
+    }
+
+    .auth-panel p {
+        color: rgba(255,255,255,0.8);
+        font-size: 1.05rem;
+        line-height: 1.6;
         margin-bottom: 2rem;
     }
 
-    .auth-header h2 {
-        color: #667eea;
-        font-size: 2rem;
-        margin-bottom: 0.5rem;
+    .panel-bullet {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        color: rgba(255,255,255,0.85);
+        font-size: 0.9rem;
+        font-weight: 500;
+        margin-bottom: 0.6rem;
     }
 
-    .auth-link {
+    .panel-bullet::before {
+        content: '';
+        width: 8px; height: 8px;
+        background: rgba(255,255,255,0.7);
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+
+    .auth-form-panel {
+        background: var(--bg);
+        padding: 4rem 3rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .auth-form-header {
+        margin-bottom: 2rem;
+    }
+
+    .auth-form-header h1 {
+        font-size: 1.9rem;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        margin-bottom: 0.4rem;
+    }
+
+    .auth-form-header p {
+        color: #6B7280;
+        font-size: 0.95rem;
+    }
+
+    .btn-full {
+        width: 100%;
+        justify-content: center;
+        padding: 0.85rem;
+        font-size: 1rem;
+        margin-top: 0.5rem;
+    }
+
+    .auth-footer-link {
         text-align: center;
         margin-top: 1.5rem;
-        color: #6c757d;
+        font-size: 0.9rem;
+        color: #6B7280;
     }
 
-    .auth-link a {
-        color: #667eea;
+    .auth-footer-link a {
+        color: var(--primary);
+        font-weight: 600;
         text-decoration: none;
-        font-weight: 500;
     }
 
-    .auth-link a:hover {
+    .auth-footer-link a:hover {
         text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+        .auth-wrap { grid-template-columns: 1fr; }
+        .auth-panel { display: none; }
+        .auth-form-panel { padding: 2.5rem 1.5rem; }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="auth-container">
-    <div class="auth-card">
-        <div class="auth-header">
-            <h2>🏥 Doctor Login</h2>
-            <p>Access your medical dashboard</p>
+<div class="auth-wrap">
+    <!-- Left panel -->
+    <div class="auth-panel">
+        <div class="auth-panel-content">
+            <div style="font-size:0.78rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:rgba(255,255,255,0.6); margin-bottom:1rem;">MedAI Platform</div>
+            <h2>Clinical AI<br>for Modern<br>Medicine</h2>
+            <p>The fastest way to get AI-assisted disease predictions from medical notes.</p>
+            <div class="panel-bullet">Clinical BERT-powered analysis</div>
+            <div class="panel-bullet">Top 5 disease predictions ranked</div>
+            <div class="panel-bullet">Full patient record management</div>
+            <div class="panel-bullet">HIPAA-compliant &amp; secure</div>
         </div>
+    </div>
 
-        <form method="post">
-            {% csrf_token %}
-            
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username" class="form-control" required>
+    <!-- Right form -->
+    <div class="auth-form-panel">
+        <div style="max-width:380px; margin:0 auto; width:100%;">
+            <div class="auth-form-header">
+                <h1>Doctor Login</h1>
+                <p>Access your medical dashboard</p>
             </div>
 
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" class="form-control" required>
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" class="form-control" required autocomplete="username">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" class="form-control" required autocomplete="current-password">
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">Login</button>
+            </form>
+
+            <div class="auth-footer-link">
+                No account? <a href="{% url 'register' %}">Register as a doctor</a>
             </div>
-
-            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.8rem;">
-                Login
-            </button>
-        </form>
-
-        <div class="auth-link">
-            Don't have an account? <a href="{% url 'register' %}">Register here</a>
         </div>
     </div>
 </div>
