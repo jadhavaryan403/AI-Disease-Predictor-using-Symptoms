@@ -80,19 +80,19 @@ Django Web Interface
 
 ---
 ### Home Page
-<img width="1849" height="1013" alt="{Home Page}" src="https://github.com/user-attachments/assets/da0e143d-ffee-4a86-b196-f37de75eed67" />
+<img width="1900" height="1015" alt="Home page" src="https://github.com/user-attachments/assets/ba5487ae-1e63-42a0-808f-2b1fdd19779b" />
 
 ### Dashboard Page
-<img width="1862" height="1006" alt="Dashboard page" src="https://github.com/user-attachments/assets/eb7c2722-4742-4995-a60b-a5538a2df396" />
+<img width="1911" height="950" alt="Dashboard page" src="https://github.com/user-attachments/assets/04bdee02-22e2-4c18-9feb-3b4f76f11e7a" />
 
 ### Patient Profile
-<img width="1893" height="1006" alt="Patient profile" src="https://github.com/user-attachments/assets/8358bb0e-2592-4437-bdab-a1f66ebfe767" />
+<img width="1870" height="1012" alt="Patient profile page" src="https://github.com/user-attachments/assets/41734f70-8f74-4913-92b6-ac8e2057cdef" />
 
 ### Upload Medical Note
-<img width="1915" height="987" alt="Medical image upload page" src="https://github.com/user-attachments/assets/98d537bd-06ef-464a-98e1-0884cf2b09f2" />
+<img width="1907" height="930" alt="Medical note upload page" src="https://github.com/user-attachments/assets/20bba339-0dff-40c9-af78-817c70ac4a0c" />
 
 ### Disease Prediction Result
-<img width="1827" height="1010" alt="Final Prediction" src="https://github.com/user-attachments/assets/11b768ce-2311-43f2-8648-b833e2b4b14d" />
+<img width="1889" height="1019" alt="Prediction page" src="https://github.com/user-attachments/assets/d202d03d-6a12-4ae7-8906-965bc3fef4cc" />
 
 ---
 
