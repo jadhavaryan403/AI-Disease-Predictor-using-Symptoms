@@ -5,7 +5,7 @@
 {% block extra_css %}
 <style>
     .page-header {
-        color: white;
+        color: rgb(232, 102, 111);
         text-align: center;
         margin-bottom: 2rem;
     }
@@ -58,15 +58,9 @@ Example:
             ></textarea>
         </div>
 
-        <div class="ai-indicator">
-            <strong>🤖 AI Processing:</strong>
-            This medical note will be analyzed using <b>Clinical BERT</b>
-            and a neural network model to predict possible diseases.
-        </div>
-
         <div style="display: flex; gap: 1rem; margin-top: 2rem;">
             <button type="submit" class="btn btn-primary" style="flex: 1;">
-                🔮 Analyze & Predict
+                Predict Disease
             </button>
             <a href="{% url 'patient_detail' patient.id %}" class="btn btn-secondary">
                 Cancel
