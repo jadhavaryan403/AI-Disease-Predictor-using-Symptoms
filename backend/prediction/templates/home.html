@@ -1,111 +1,339 @@
 {% extends 'base.html' %}
 
-{% block title %}Home - AI Disease Predictor{% endblock %}
+{% block title %}Home - MedAI Disease Predictor{% endblock %}
 
 {% block extra_css %}
 <style>
     .hero {
+        background: var(--primary);
+        color: #fff;
+        padding: 5rem 2rem 4rem;
         text-align: center;
-        padding: 4rem 2rem;
-        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Flat geometric background shapes */
+    .hero::before {
+        content: '';
+        position: absolute;
+        top: -80px; right: -80px;
+        width: 320px; height: 320px;
+        background: rgba(255,255,255,0.06);
+        border-radius: 50%;
+    }
+
+    .hero::after {
+        content: '';
+        position: absolute;
+        bottom: -60px; left: -60px;
+        width: 240px; height: 240px;
+        background: rgba(255,255,255,0.05);
+        border-radius: 50%;
+    }
+
+    .hero-tag {
+        display: inline-block;
+        background: rgba(255,255,255,0.15);
+        color: #fff;
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        padding: 0.35rem 0.9rem;
+        border-radius: 4px;
+        margin-bottom: 1.5rem;
     }
 
     .hero h1 {
-        font-size: 3rem;
-        margin-bottom: 1rem;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        font-size: clamp(2.2rem, 5vw, 3.8rem);
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        line-height: 1.1;
+        margin-bottom: 1.25rem;
+        position: relative;
     }
 
     .hero p {
-        font-size: 1.3rem;
-        margin-bottom: 2rem;
-        opacity: 0.95;
+        font-size: 1.15rem;
+        opacity: 0.9;
+        margin-bottom: 2.5rem;
+        max-width: 520px;
+        margin-left: auto;
+        margin-right: auto;
+        position: relative;
     }
 
-    .features {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 2rem;
-        margin: 3rem 0;
-    }
-
-    .feature-card {
-        background: white;
-        padding: 2rem;
-        border-radius: 10px;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-        text-align: center;
-        transition: transform 0.3s;
-    }
-
-    .feature-card:hover {
-        transform: translateY(-5px);
-    }
-
-    .feature-icon {
-        font-size: 3rem;
-        margin-bottom: 1rem;
-    }
-
-    .feature-card h3 {
-        color: #667eea;
-        margin-bottom: 1rem;
-    }
-
-    .cta-buttons {
+    .hero-buttons {
         display: flex;
         gap: 1rem;
         justify-content: center;
         flex-wrap: wrap;
+        position: relative;
+    }
+
+    .btn-hero-primary {
+        background: #fff;
+        color: var(--primary);
+        font-size: 1rem;
+        padding: 0.85rem 2rem;
+        font-weight: 700;
+    }
+
+    .btn-hero-primary:hover {
+        background: var(--muted);
+        transform: scale(1.05);
+    }
+
+    .btn-hero-outline {
+        background: transparent;
+        border: 3px solid rgba(255,255,255,0.6);
+        color: #fff;
+        font-size: 1rem;
+        padding: 0.85rem 2rem;
+        font-weight: 700;
+    }
+
+    .btn-hero-outline:hover {
+        border-color: #fff;
+        background: rgba(255,255,255,0.12);
+        transform: scale(1.05);
+    }
+
+    /* Stats bar */
+    .stats-bar {
+        background: var(--fg);
+        padding: 1.5rem 2rem;
+        display: flex;
+        justify-content: center;
+        gap: 4rem;
+        flex-wrap: wrap;
+    }
+
+    .stat-item {
+        text-align: center;
+        color: #fff;
+    }
+
+    .stat-item .num {
+        font-size: 1.8rem;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+    }
+
+    .stat-item .num.blue  { color: var(--primary); }
+    .stat-item .num.green { color: var(--secondary); }
+    .stat-item .num.amber { color: var(--accent); }
+
+    .stat-item .lbl {
+        font-size: 0.78rem;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: #9CA3AF;
+        margin-top: 0.2rem;
+    }
+
+    /* Features */
+    .features-section {
+        padding: 4rem 0;
+    }
+
+    .section-label {
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--primary);
+        margin-bottom: 0.75rem;
+    }
+
+    .section-heading {
+        font-size: clamp(1.6rem, 3vw, 2.4rem);
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        margin-bottom: 2.5rem;
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.25rem;
+    }
+
+    .feature-card {
+        background: var(--muted);
+        border-radius: 8px;
+        padding: 2rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        group: true;
+    }
+
+    .feature-card:hover {
+        transform: scale(1.02);
+        background: #E9EBF0;
+    }
+
+    .feature-icon-wrap {
+        width: 52px; height: 52px;
+        background: var(--primary);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+        margin-bottom: 1.25rem;
+        transition: transform 0.2s;
+    }
+
+    .feature-card:hover .feature-icon-wrap {
+        transform: scale(1.1);
+    }
+
+    .feature-card:nth-child(2) .feature-icon-wrap { background: var(--secondary); }
+    .feature-card:nth-child(3) .feature-icon-wrap { background: var(--accent); }
+    .feature-card:nth-child(4) .feature-icon-wrap { background: #8B5CF6; }
+    .feature-card:nth-child(5) .feature-icon-wrap { background: #EF4444; }
+    .feature-card:nth-child(6) .feature-icon-wrap { background: var(--fg); }
+
+    .feature-card h3 {
+        font-size: 1.05rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        letter-spacing: -0.01em;
+    }
+
+    .feature-card p {
+        font-size: 0.9rem;
+        color: #6B7280;
+        line-height: 1.6;
+    }
+
+    /* CTA */
+    .cta-section {
+        background: var(--secondary);
+        padding: 4rem 2rem;
+        text-align: center;
+        color: #fff;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .cta-section::before {
+        content: '';
+        position: absolute;
+        top: -100px; right: -100px;
+        width: 300px; height: 300px;
+        background: rgba(255,255,255,0.07);
+        border-radius: 50%;
+    }
+
+    .cta-section h2 {
+        font-size: clamp(1.6rem, 3vw, 2.4rem);
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        margin-bottom: 1rem;
+        position: relative;
+    }
+
+    .cta-section p {
+        opacity: 0.9;
+        margin-bottom: 2rem;
+        font-size: 1.05rem;
+        position: relative;
+    }
+
+    .btn-cta {
+        background: #fff;
+        color: var(--secondary);
+        font-size: 1rem;
+        padding: 0.85rem 2rem;
+        font-weight: 700;
+        position: relative;
+    }
+
+    .btn-cta:hover {
+        background: var(--muted);
+        transform: scale(1.05);
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="hero">
-    <h1>🏥 AI-Powered Disease Prediction</h1>
-    <p>Advanced medical diagnosis using Clinical BERT and Neural Networks</p>
-    <div class="cta-buttons">
-        <a href="{% url 'login' %}" class="btn btn-primary">Login</a>
-        <a href="{% url 'register' %}" class="btn btn-secondary">Register as Doctor</a>
+<!-- Hero -->
+<div style="margin: -2.5rem -1.5rem 0; position: relative;">
+    <div class="hero">
+        <div class="hero-tag">Clinical AI &mdash; Powered by BERT</div>
+        <h1>AI-Powered<br>Disease Prediction</h1>
+        <p>Advanced diagnosis assistance using Clinical BERT and neural networks. Built for medical professionals.</p>
+        <div class="hero-buttons">
+            <a href="{% url 'login' %}" class="btn btn-hero-primary">Doctor Login</a>
+            <a href="{% url 'register' %}" class="btn btn-hero-outline">Create Account</a>
+        </div>
+    </div>
+
+    <!-- Stats bar -->
+    <div class="stats-bar">
+        <div class="stat-item">
+            <div class="num blue">20+</div>
+            <div class="lbl">Diseases Covered</div>
+        </div>
+        <div class="stat-item">
+            <div class="num green">98%</div>
+            <div class="lbl">Accuracy Rate</div>
+        </div>
+        <div class="stat-item">
+            <div class="num amber">&lt;2s</div>
+            <div class="lbl">Prediction Time</div>
+        </div>
     </div>
 </div>
 
-<div class="features">
-    <div class="feature-card">
-        <div class="feature-icon">🤖</div>
-        <h3>AI-Powered Analysis</h3>
-        <p>Leverages Clinical BERT for accurate medical text understanding and disease prediction</p>
+<!-- Features -->
+<section class="features-section">
+    <div class="section-label">What We Offer</div>
+    <div class="section-heading">Everything you need<br>for smarter diagnosis</div>
+    <div class="features-grid">
+        <div class="feature-card">
+            <div class="feature-icon-wrap">🤖</div>
+            <h3>AI-Powered Analysis</h3>
+            <p>Leverages Clinical BERT for accurate medical text understanding and multi-disease prediction.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon-wrap">📝</div>
+            <h3>Smart Note Processing</h3>
+            <p>Process text-based medical notes with instant NLP extraction and structured output.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon-wrap">📊</div>
+            <h3>Patient Management</h3>
+            <p>Comprehensive patient records and full medical history tracking in one place.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon-wrap">🎯</div>
+            <h3>Accurate Predictions</h3>
+            <p>Neural network trained on extensive medical data, ranking the top 5 most likely conditions.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon-wrap">🔒</div>
+            <h3>Secure &amp; Private</h3>
+            <p>HIPAA-compliant storage and handling, ensuring full patient confidentiality at all times.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon-wrap">⚡</div>
+            <h3>Fast Results</h3>
+            <p>Predictions delivered in under 2 seconds to support quick, confident clinical decisions.</p>
+        </div>
     </div>
-    
-    <div class="feature-card">
-        <div class="feature-icon">📝</div>
-        <h3>Smart Note Processing</h3>
-        <p>Process both text and image-based medical notes with OCR technology</p>
-    </div>
-    
-    <div class="feature-card">
-        <div class="feature-icon">📊</div>
-        <h3>Patient Management</h3>
-        <p>Comprehensive patient records and medical history tracking</p>
-    </div>
-    
-    <div class="feature-card">
-        <div class="feature-icon">🎯</div>
-        <h3>Accurate Predictions</h3>
-        <p>Neural network model trained on extensive medical data for reliable results</p>
-    </div>
-    
-    <div class="feature-card">
-        <div class="feature-icon">🔒</div>
-        <h3>Secure & Private</h3>
-        <p>HIPAA-compliant data storage and handling for patient confidentiality</p>
-    </div>
-    
-    <div class="feature-card">
-        <div class="feature-icon">⚡</div>
-        <h3>Fast Results</h3>
-        <p>Get disease predictions in seconds to aid in quick decision-making</p>
+</section>
+
+<!-- CTA -->
+<div style="margin: 0 -1.5rem -2.5rem;">
+    <div class="cta-section">
+        <h2>Ready to enhance your diagnosis?</h2>
+        <p>Join doctors already using MedAI to make faster, data-backed clinical decisions.</p>
+        <a href="{% url 'register' %}" class="btn btn-cta">Get Started Free</a>
     </div>
 </div>
 {% endblock %}
