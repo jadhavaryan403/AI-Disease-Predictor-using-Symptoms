@@ -1,65 +1,111 @@
 {% extends 'base.html' %}
 
-{% block title %}Register - AI Disease Predictor{% endblock %}
+{% block title %}Register - MedAI Disease Predictor{% endblock %}
 
 {% block extra_css %}
 <style>
-    .auth-container {
-        max-width: 600px;
-        margin: 3rem auto;
+    .register-wrap {
+        max-width: 640px;
+        margin: 0 auto;
     }
-    .auth-card {
-        background: white;
-        padding: 3rem;
-        border-radius: 15px;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+
+    .register-header {
+        background: var(--fg);
+        border-radius: 8px;
+        padding: 2rem 2.5rem;
+        margin-bottom: 1.5rem;
+        position: relative;
+        overflow: hidden;
     }
-    .auth-header {
-        text-align: center;
-        margin-bottom: 2rem;
+
+    .register-header::after {
+        content: '';
+        position: absolute;
+        top: -60px; right: -60px;
+        width: 200px; height: 200px;
+        background: rgba(255,255,255,0.04);
+        border-radius: 50%;
     }
-    .auth-header h2 {
-        color: #667eea;
-        font-size: 2rem;
+
+    .register-header h1 {
+        font-size: 1.9rem;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        color: #fff;
+        margin-bottom: 0.3rem;
     }
+
+    .register-header p {
+        color: #9CA3AF;
+        font-size: 0.95rem;
+    }
+
     .form-row {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 1rem;
     }
-    .auth-link {
+
+    .section-divider {
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: #9CA3AF;
+        margin: 1.5rem 0 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .section-divider::after {
+        content: '';
+        flex: 1;
+        height: 2px;
+        background: var(--border);
+    }
+
+    .btn-full {
+        width: 100%;
+        justify-content: center;
+        padding: 0.85rem;
+        font-size: 1rem;
+        margin-top: 0.5rem;
+    }
+
+    .auth-footer-link {
         text-align: center;
         margin-top: 1.5rem;
-        color: #6c757d;
+        font-size: 0.9rem;
+        color: #6B7280;
     }
-    .auth-link a {
-        color: #667eea;
-        font-weight: 500;
+
+    .auth-footer-link a {
+        color: var(--primary);
+        font-weight: 600;
         text-decoration: none;
+    }
+
+    .auth-footer-link a:hover { text-decoration: underline; }
+
+    @media (max-width: 600px) {
+        .form-row { grid-template-columns: 1fr; }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="auth-container">
-    <div class="auth-card">
+<div class="register-wrap">
+    <div class="register-header">
+        <h1>Doctor Registration</h1>
+        <p>Create your professional account to get started</p>
+    </div>
 
-        <div class="auth-header">
-            <h2>🏥 Doctor Registration</h2>
-            <p>Create your professional account</p>
-        </div>
-
-        <!-- Django messages -->
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endif %}
-
+    <div class="card">
         <form method="post">
             {% csrf_token %}
+
+            <div class="section-divider">Personal Info</div>
 
             <div class="form-row">
                 <div class="form-group">
@@ -73,46 +119,47 @@
             </div>
 
             <div class="form-group">
-                <label>Username</label>
-                <input type="text" name="username" class="form-control" required>
-            </div>
-
-            <div class="form-group">
                 <label>Email</label>
                 <input type="email" name="email" class="form-control" required>
+            </div>
+
+            <div class="section-divider">Account</div>
+
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" name="username" class="form-control" required autocomplete="username">
             </div>
 
             <div class="form-row">
                 <div class="form-group">
                     <label>Password</label>
-                    <input type="password" name="password" class="form-control" required>
+                    <input type="password" name="password" class="form-control" required autocomplete="new-password">
                 </div>
                 <div class="form-group">
                     <label>Confirm Password</label>
-                    <input type="password" name="confirm_password" class="form-control" required>
+                    <input type="password" name="confirm_password" class="form-control" required autocomplete="new-password">
                 </div>
             </div>
 
-            <div class="form-group">
-                <label>Specialization</label>
-                <input type="text" name="specialization" class="form-control"
-                       placeholder="e.g. Cardiologist, Physician" required>
+            <div class="section-divider">Professional</div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Specialization</label>
+                    <input type="text" name="specialization" class="form-control" placeholder="e.g. Cardiologist" required>
+                </div>
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="tel" name="phone" class="form-control" required>
+                </div>
             </div>
 
-            <div class="form-group">
-                <label>Phone Number</label>
-                <input type="tel" name="phone" class="form-control" required>
-            </div>
-
-            <button type="submit" class="btn btn-primary w-100 mt-3">
-                Register
-            </button>
+            <button type="submit" class="btn btn-primary btn-full">Create Account</button>
         </form>
+    </div>
 
-        <div class="auth-link">
-            Already registered? <a href="{% url 'login' %}Login</a>
-        </div>
-
+    <div class="auth-footer-link">
+        Already registered? <a href="{% url 'login' %}">Login here</a>
     </div>
 </div>
 {% endblock %}
